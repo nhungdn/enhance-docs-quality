@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hệ thống Quét và Cải thiện Chất lượng Tài liệu</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!--
+    PHÂN CÔNG: Thành viên 4 (TV4) sở hữu và chỉnh sửa file này.
+    - Tuần 2: Khung upload ảnh & hiển thị ảnh kết quả.
+    - Tuần 3: Giao diện xem Trước/Sau (Before/After) & nút tải ảnh PNG/JPG.
+    - Tuần 4: Canvas tương tác kéo 4 góc thủ công khi is_valid == false.
+  -->
+  <header>
+    <h1>Hệ thống Quét và Cải thiện Chất lượng Tài liệu</h1>
+    <p>Bài tập lớn môn Xử lý ảnh số — Tự động phát hiện biên, làm phẳng phối cảnh &amp; tăng cường chất lượng</p>
+  </header>
+
+  <main>
+    <section id="upload-section">
+      <!-- TODO (TV4 - Tuần 2): Form tải ảnh lên -->
+      <input type="file" id="image-input" accept="image/*" />
+      <button id="scan-btn" type="button">Quét tài liệu</button>
+    </section>
+
+    <section id="fallback-banner" hidden>
+      <!-- TODO (TV4 - Tuần 4): Hiển thị cảnh báo khi detect_corners trả về is_valid = false -->
+      <p>Không tìm thấy tứ giác tài liệu tự động đủ tin cậy. Vui lòng kéo 4 đỉnh màu đỏ vào 4 góc trang giấy rồi bấm <strong>Áp dụng 4 góc</strong>.</p>
+      <button id="apply-corners-btn" type="button">Áp dụng 4 góc</button>
+    </section>
+
+    <section id="workspace">
+      <div class="panel">
+        <h2>Ảnh gốc &amp; Khung 4 góc (Trước)</h2>
+        <!-- TODO (TV4 - Tuần 4): Vẽ ảnh gốc và 4 nút tròn [TL, TR, BR, BL] cho phép kéo thả trên Canvas -->
+        <canvas id="input-canvas"></canvas>
+      </div>
+
+      <div class="panel">
+        <h2>Ảnh sau xử lý (Sau)</h2>
+        <!-- TODO (TV4 - Tuần 2 & 3): Hiển thị ảnh sau warp + enhance và nút tải ảnh -->
+        <img id="output-image" alt="Ảnh tài liệu sau xử lý" />
+        <div class="actions">
+          <a id="download-btn" download="scanned_document.png">Tải ảnh kết quả</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
