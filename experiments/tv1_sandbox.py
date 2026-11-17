@@ -1,12 +1,4 @@
-"""Script kiểm thử riêng dành cho Thành viên 1 (TV1).
-
-================================================================================
-PHÂN CÔNG: Thành viên 1 (TV1) toàn quyền sử dụng file này để:
-- Chạy thử `detect_corners` và `warp_with_corners` trên 20 ảnh mẫu ở Tuần 2 & Tuần 3.
-- Vẽ hình minh họa 4 đỉnh phát hiện được lên ảnh để đưa vào المục 2.1–2.4 và 8.1 của báo cáo.
-- Lưu kết quả tạm vào `experiments/outputs/tv1/` (đã được `.gitignore` bỏ qua, không sợ rác Git).
-================================================================================
-"""
+"""Script kiểm thử riêng dành cho Thành viên 1."""
 
 from __future__ import annotations
 
@@ -41,12 +33,37 @@ if __name__ == "__main__":
     out_dir = PROJECT_ROOT / "experiments" / "outputs" / "tv1"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    sample_path = PROJECT_ROOT / "data" / "raw" / "doc_001.jpg"
-    img = cv2.imread(str(sample_path))
-    if img is not None:
+    available_paths = sorted((PROJECT_ROOT / "data" / "raw").glob("doc_*.jpg"))
+    if not available_paths:
+        raise FileNotFoundError("Không tìm thấy ảnh mẫu trong data/raw.")
+    sample_count = min(20, len(available_paths))
+    sample_indices = np.linspace(
+        0, len(available_paths) - 1, sample_count, dtype=int
+    )
+    sample_paths = [available_paths[index] for index in sample_indices]
+
+    valid_count = 0
+    for sample_path in sample_paths:
+        img = cv2.imread(str(sample_path))
+        if img is None:
+            raise ValueError(f"Không đọc được ảnh mẫu: {sample_path}")
+
         det = detect_corners(img)
+        valid_count += int(det["is_valid"])
         vis = draw_detected_corners(img, det["corners"], det["is_valid"])
         warped = warp_with_corners(img, det["corners"])
-        cv2.imwrite(str(out_dir / "doc_001_corners.jpg"), vis)
-        cv2.imwrite(str(out_dir / "doc_001_warped.jpg"), warped)
-        print("TV1 sandbox test OK. Saved outputs to:", out_dir)
+        stem = sample_path.stem
+        if not cv2.imwrite(str(out_dir / f"{stem}_corners.jpg"), vis):
+            raise OSError(f"Không lưu được ảnh minh họa: {stem}")
+        if not cv2.imwrite(str(out_dir / f"{stem}_warped.jpg"), warped):
+            raise OSError(f"Không lưu được ảnh warp: {stem}")
+        print(
+            f"{stem}: is_valid={det['is_valid']}, "
+            f"reason={det['fallback_reason']}, "
+            f"corners={det['corners'].round(1).tolist()}"
+        )
+
+    print(
+        f"Checked {len(sample_paths)} images; "
+        f"{valid_count} detected automatically. Outputs: {out_dir}"
+    )

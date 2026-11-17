@@ -42,10 +42,10 @@ enhance-docs-quality/
 
 | Thành viên | Phụ trách chuyên môn | Các file ĐƯỢC SỬA | Script chạy thử riêng |
 |:---:|---|---|---|
-| **TV1** | Phát hiện biên, kiểm tra tứ giác hợp lệ, biến đổi phối cảnh, gợi ý góc fallback | `core/detector.py`<br>`core/warp.py` | `python experiments/tv1_sandbox.py` |
-| **TV2** | Chuyển xám, khử bóng đổ hình thái học, khử nhiễu, CLAHE, nhị phân hóa (Otsu & Adaptive) | `core/enhancer.py` | `python experiments/tv2_sandbox.py` |
-| **TV3** | Dữ liệu, gán nhãn 4 góc, độ đo đánh giá (IoU, PSNR, SSIM, độ đồng nhất nền), thí nghiệm | `experiments/metrics.py`<br>`experiments/evaluate.py`<br>`data/*` | `python experiments/evaluate.py` |
-| **TV4** | Web Backend/Frontend, xem Trước/Sau, Canvas kéo 4 góc thủ công, tải ảnh kết quả | `web/app.py`<br>`web/static/*`<br>`core/pipeline.py` | `python -m web.app` |
+| Nguyễn Thị Ngọc Mai | Phát hiện biên, kiểm tra tứ giác hợp lệ, biến đổi phối cảnh, gợi ý góc fallback | `core/detector.py`<br>`core/warp.py` | `python experiments/tv1_sandbox.py` |
+| Khổng Thị Thùy Linh | Chuyển xám, khử bóng đổ hình thái học, khử nhiễu, CLAHE, nhị phân hóa (Otsu & Adaptive) | `core/enhancer.py` | `python experiments/tv2_sandbox.py` |
+| Nguyễn Thị Anh Ngọc | Dữ liệu, gán nhãn 4 góc, độ đo đánh giá (IoU, PSNR, SSIM, độ đồng nhất nền), thí nghiệm | `experiments/metrics.py`<br>`experiments/evaluate.py`<br>`data/*` | `python experiments/evaluate.py` |
+| Đoàn Thị Hồng Nhung | Web Backend/Frontend, xem Trước/Sau, Canvas kéo 4 góc thủ công, tải ảnh kết quả | `web/app.py`<br>`web/static/*`<br>`core/pipeline.py` | `python -m web.app` |
 
 > **Quy tắc làm việc nhóm tránh xung đột:**
 > 1. Mỗi thành viên tạo nhánh riêng theo tên mình (ví dụ: `git checkout -b tv1/corner-detection`, `tv2/enhancement`, `tv3/evaluation`, `tv4/web-ui`).

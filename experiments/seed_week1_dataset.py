@@ -38,7 +38,7 @@ def _render_clean_page(idx: int, cond_key: str, page_w: int = 600, page_h: int =
     # Tiêu đề tài liệu
     cv2.putText(
         page,
-        f"DAI HOC BACH KHOA - BAO CAO XLA #{idx:03d}",
+        f"PTIT - BAO CAO XLA #{idx:03d}",
         (45, 65),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.65,
