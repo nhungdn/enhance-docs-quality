@@ -1,0 +1,48 @@
+/*
+  PHÂN CÔNG: Thành viên 4 (TV4) sở hữu và chỉnh sửa file này.
+  TODO (TV4 - Tuần 2, 3, 4): Thiết kế bố cục 2 cột Trước/Sau, nút bấm và con trỏ kéo góc trên Canvas.
+*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  padding: 24px;
+}
+
+header {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+canvas,
+#output-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
