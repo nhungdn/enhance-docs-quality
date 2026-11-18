@@ -54,22 +54,25 @@ enhance-docs-quality/
 
 ---
 
-## 2. Sơ đồ Pipeline v0
+## 2. Sơ đồ Pipeline
 
 ```mermaid
 flowchart TD
-    A["Ảnh đầu vào (BGR chụp từ điện thoại)"] --> B["Tiền xử lý dò biên: Chuyển xám + Lọc Gaussian (5x5)"]
+    A["Ảnh đầu vào (BGR chụp từ điện thoại / máy tính)"] --> B["Tiền xử lý dò biên: Chuyển xám + Lọc Gaussian (5x5)"]
     B --> C["Phát hiện biên Canny + Phép đóng hình thái học"]
     C --> D["Tìm Contour & Xấp xỉ đa giác (approxPolyDP)"]
     D --> E{"Kiểm tra tứ giác hợp lệ?\n(4 đỉnh, lồi, diện tích >= 15%, góc 45°-135°)"}
-    E -- "Hợp lệ (is_valid = True)" --> F["Sắp xếp 4 góc [TL, TR, BR, BL]"]
+    E -- "Hợp lệ (is_valid = True)" --> E1{"Lề ngoài đã là giấy trắng?\n(_is_inner_border_on_clean_page)"}
+    E1 -- "Đúng (Khung viền trong trang bìa)" --> E2["Giữ nguyên 4 góc toàn trang"]
+    E1 -- "Sai (Nền bàn ngoài trang giấy)" --> F["Sắp xếp 4 góc [TL, TR, BR, BL]"]
+    E2 --> F
     E -- "Không hợp lệ (is_valid = False)" --> G["Fallback: Gợi ý 4 góc minAreaRect + Người dùng kéo 4 góc trên Web"]
     G --> F
     F --> H["Biến đổi phối cảnh Homography 3x3 (warp_with_corners)"]
     H --> I["Chuyển xám + Ước lượng nền hình thái học khử bóng đổ"]
-    I --> J["Khử nhiễu (Median/Bilateral) + Tăng tương phản cục bộ (CLAHE)"]
-    J --> K["Nhị phân hóa thích nghi (Adaptive Gaussian Thresholding)"]
-    K --> L["Đầu ra: Xem Trước/Sau trên Web & Tải ảnh tài liệu sạch (PNG/JPG)"]
+    I --> J["Làm sắc nét Unsharp Mask + Mặt nạ ngưỡng thích nghi & lọc nhiễu <= 3px"]
+    J --> K["Làm trắng nền 255 & Kéo giãn tương phản mềm bảo toàn nét chữ/con dấu"]
+    K --> L["Đầu ra: Xem Trước/Sau đặt cạnh nhau trên Web & Tải ảnh (.PNG / .JPG)"]
 ```
 
 ---
@@ -84,7 +87,39 @@ flowchart TD
 
 ---
 
-## 4. Kiểm tra nhanh (Smoke Test)
+## 4. Hướng dẫn cài đặt & Khởi chạy Ứng dụng Web (TV4)
+
+### 4.1. Cài đặt môi trường
+Yêu cầu **Python 3.10+**. Cài đặt các thư viện cần thiết:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4.2. Khởi chạy Ứng dụng Web
+Chạy trực tiếp module `web.app`:
+
+```bash
+python -m web.app
+```
+
+Hoặc chạy với `uvicorn` (tự động reload khi phát triển):
+
+```bash
+uvicorn web.app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Sau đó mở trình duyệt tại địa chỉ: **`http://127.0.0.1:8000`**
+
+**Luồng sử dụng trên giao diện Web:**
+1. **Kéo thả hoặc chọn ảnh chụp tài liệu** (`.JPG`, `.PNG`) vào vùng tải ảnh trên trang chủ.
+2. **Hệ thống tự động xử lý** (hiển thị trạng thái *Loading* trong lúc phát hiện 4 góc, cắt phẳng phối cảnh và làm sạch nền).
+3. **Xem Trước / Sau đặt cạnh nhau:** Đối chiếu trực tiếp **Ảnh gốc (Trước)** ở cột trái và **Ảnh kết quả (Sau)** ở cột phải (hỗ trợ kéo chỉnh lại 4 góc ngay trên ảnh gốc khi cần).
+4. **Tải ảnh kết quả về máy:** Chọn nút **⬇ Tải về .PNG** hoặc **⬇ Tải về .JPG**.
+
+---
+
+## 5. Kiểm tra nhanh qua CLI (Smoke Test)
 
 ```bash
 python experiments/tv1_sandbox.py

@@ -1,7 +1,26 @@
 /*
   PHÂN CÔNG: Thành viên 4 (TV4) sở hữu và chỉnh sửa file này.
-  TODO (TV4 - Tuần 2, 3, 4): Thiết kế bố cục 2 cột Trước/Sau, nút bấm và con trỏ kéo góc trên Canvas.
+  Giao diện sản phẩm tối giản, thân thiện với người dùng cuối:
+  Kéo thả ảnh -> Loading -> So sánh Trước/Sau đặt cạnh nhau -> Tải ảnh (.PNG / .JPG)
 */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --warning-bg: #fff7ed;
+  --warning-border: #fdba74;
+  --warning-text: #9a3412;
+  --warning-btn: #ea580c;
+  --radius: 12px;
+  --shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
 
 * {
   box-sizing: border-box;
@@ -10,22 +29,140 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
-  padding: 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  padding: 28px 20px 48px;
+  line-height: 1.5;
 }
 
-header {
-  max-width: 1200px;
+.app-header {
+  max-width: 1180px;
   margin: 0 auto 24px;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.app-header p {
+  font-size: 0.98rem;
+  color: var(--text-muted);
 }
 
 main {
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
+/* Khu vực Kéo thả / Chọn ảnh */
+.drop-zone {
+  position: relative;
+  background: var(--bg-card);
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background: #eff6ff;
+}
+
+#image-input {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+.drop-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.browse-link {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.drop-hint {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Hộp hiển thị trạng thái Loading */
+.loading-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 18px;
+  box-shadow: var(--shadow);
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.loading-box[hidden],
+.fallback-banner[hidden],
+#workspace[hidden],
+.btn[hidden],
+.canvas-hint[hidden] {
+  display: none !important;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #dbeafe;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Thanh thông báo khi cần chỉnh 4 góc */
+.fallback-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--warning-text);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-top: 18px;
+  font-size: 0.92rem;
+}
+
+/* Bố cục 2 cột Trước / Sau đặt cạnh nhau */
 #workspace {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -34,15 +171,172 @@ main {
 }
 
 .panel {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
 }
 
-canvas,
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.panel-header h2 {
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.corner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-badge {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.image-stage {
+  background: #0f172a;
+  border-radius: 10px;
+  min-height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 8px;
+}
+
+canvas#input-canvas,
 #output-image {
   max-width: 100%;
+  max-height: 580px;
   height: auto;
   display: block;
+  border-radius: 4px;
+}
+
+canvas#input-canvas {
+  touch-action: none;
+}
+
+.canvas-hint {
+  margin-top: 10px;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Khu vực nút tải về (.PNG / .JPG) */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.download-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.download-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #0f172a;
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: var(--success-hover);
+}
+
+.btn-warning {
+  background: var(--warning-btn);
+  color: #ffffff;
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: var(--text-main);
+  border: 1px solid #cbd5e1;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+@media (max-width: 900px) {
+  #workspace {
+    grid-template-columns: 1fr;
+  }
 }

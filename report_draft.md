@@ -10,10 +10,10 @@
 
 | STT | Họ tên | MSSV | Phần phụ trách | % đóng góp |
 |:---:|---|---|---|:---:|
-| 1 | [Tên TV1] | [MSSV] | Phát hiện biên, kiểm tra tứ giác hợp lệ, hiệu chỉnh phối cảnh, cắt nền & fallback (`detect_corners`, `warp_with_corners`) | 25% |
-| 2 | [Tên TV2] | [MSSV] | Tiền xử lý và tăng cường chất lượng ảnh: chuyển xám, loại bóng đổ hình thái học, khử nhiễu, tăng tương phản CLAHE, nhị phân hóa (`enhance`) | 25% |
-| 3 | [Tên TV3] | [MSSV] | Xây dựng dữ liệu, gán nhãn 4 góc, thiết kế thí nghiệm, cài đặt các độ đo đánh giá (IoU, sai số góc, PSNR, SSIM, độ đồng nhất nền) | 25% |
-| 4 | [Tên TV4] | [MSSV] | Ứng dụng Web, giao diện xem Trước/Sau, giao diện Canvas kéo 4 góc thủ công, tải ảnh kết quả, tích hợp pipeline, video demo | 25% |
+| 1 | Nguyễn Thị Ngọc Mai | [MSSV] | Phát hiện biên, kiểm tra tứ giác hợp lệ, hiệu chỉnh phối cảnh, cắt nền & fallback (`detect_corners`, `warp_with_corners`) | 25% |
+| 2 | Khổng Thị Thùy Linh | [MSSV] | Tiền xử lý và tăng cường chất lượng ảnh: chuyển xám, loại bóng đổ hình thái học, khử nhiễu, tăng tương phản CLAHE, nhị phân hóa (`enhance`) | 25% |
+| 3 | Nguyễn Thị Anh Ngọc | [MSSV] | Xây dựng dữ liệu, gán nhãn 4 góc, thiết kế thí nghiệm, cài đặt các độ đo đánh giá (IoU, sai số góc, PSNR, SSIM, độ đồng nhất nền) | 25% |
+| 4 | Đoàn Thị Hồng Nhung | [MSSV] | Ứng dụng Web, giao diện xem Trước/Sau, giao diện Canvas kéo 4 góc thủ công, tải ảnh kết quả, tích hợp pipeline, video demo | 25% |
 
 ---
 
@@ -150,40 +150,43 @@ Bảng phân bố 36 ảnh đầu tiên trong Tuần 1 theo 6 nhóm điều ki�
 
 ---
 
-## 4. Pipeline đề xuất (Phiên bản v0 — Chốt Tuần 1)
+## 4. Pipeline đề xuất (Đã tối ưu tích hợp tại `core/pipeline.py`)
 
 ### 4.1. Sơ đồ tổng quan
 
-Sơ đồ khối tổng quan của **Pipeline v0** được cả nhóm thống nhất như sau:
+Sơ đồ khối tổng quan của Pipeline sau khi tích hợp các cơ chế bảo vệ lề trang giấy và làm trắng nền bảo toàn nét chữ:
 
 ```mermaid
 flowchart TD
-    A["Ảnh đầu vào (BGR chụp từ điện thoại)"] --> B["Bước 1: Tiền xử lý dò biên\n(Chuyển xám + Lọc Gaussian 5x5)"]
+    A["Ảnh đầu vào (BGR chụp từ điện thoại / máy tính)"] --> B["Bước 1: Tiền xử lý dò biên\n(Chuyển xám + Lọc Gaussian 5x5)"]
     B --> C["Bước 2: Phát hiện biên & Đóng hình thái học\n(Canny Edge Detection + Morphological Closing)"]
     C --> D["Bước 3: Tìm Contour & Xấp xỉ đa giác\n(findContours + approxPolyDP)"]
     D --> E{"Bước 4: Tứ giác hợp lệ?\n(4 đỉnh, lồi, diện tích >= 15%, góc 45°-135°)"}
-    E -- "Hợp lệ (is_valid = True)" --> F["Chuẩn hóa thứ tự 4 góc\n[Top-Left, Top-Right, Bottom-Right, Bottom-Left]"]
+    E -- "Hợp lệ (is_valid = True)" --> E1{"Lề ngoài đã là giấy trắng?\n(_is_inner_border_on_clean_page)"}
+    E1 -- "Đúng (Khung viền trong trang bìa)" --> E2["Giữ nguyên 4 góc toàn trang\n(Bảo toàn lề trắng trang giấy)"]
+    E1 -- "Sai (Nền bàn ngoài trang giấy)" --> F["Chuẩn hóa thứ tự 4 góc\n[Top-Left, Top-Right, Bottom-Right, Bottom-Left]"]
+    E2 --> F
     E -- "Không hợp lệ (is_valid = False)" --> G["Cơ chế Fallback:\nGợi ý 4 góc (minAreaRect) + Người dùng kéo 4 góc trên Web"]
     G --> F
-    F --> H["Bước 5: Biến đổi phối cảnh Homography 3x3\n(warp_with_corners -> Ảnh tài liệu phẳng)"]
-    H --> I["Bước 6: Chuyển xám & Khử bóng đổ\n(Morphological Closing nhân lớn + Chia chuẩn hóa)"]
-    I --> J["Bước 7: Khử nhiễu & Tăng tương phản cục bộ\n(Median/Bilateral Filter + CLAHE)"]
-    J --> K["Bước 8: Nhị phân hóa thích nghi\n(Adaptive Gaussian Thresholding)"]
-    K --> L["Bước 9: Hiển thị Trước/Sau & Tải ảnh tài liệu sạch (PNG/JPG)"]
+    F --> H["Bước 5: Biến đổi phối cảnh Homography 3x3\n(warp_with_corners / Bỏ qua nội suy nếu góc trùng khung gốc)"]
+    H --> I["Bước 6: Chuyển xám & Khử bóng đổ thích nghi\n(Morphological Closing nhân tỉ lệ theo ảnh + Chia chuẩn hóa)"]
+    I --> J["Bước 7: Làm sắc nét Unsharp Mask & Mặt nạ ngưỡng thích nghi\n(Adaptive Gaussian Mask + Lọc nhiễu liên thông <= 3px)"]
+    J --> K["Bước 8: Làm trắng nền & Kéo giãn tương phản mềm\n(Nền trắng 255 + Bảo toàn viền chống răng cưa nét chữ/con dấu)"]
+    K --> L["Bước 9: Hiển thị Trước/Sau đặt cạnh nhau & Tải ảnh (.PNG / .JPG)"]
 ```
 
-### 4.2. Mô tả từng bước và bảng tham số khởi tạo (Pipeline v0)
+### 4.2. Mô tả từng bước và bảng tham số của Pipeline
 
-| Bước | Kỹ thuật sử dụng | Hàm phụ trách | Tham số chính | Giá trị khởi tạo (v0) | Lý do lựa chọn |
+| Bước | Kỹ thuật sử dụng | Hàm phụ trách | Tham số chính | Giá trị cấu hình | Lý do lựa chọn & Cải tiến chất lượng |
 |---|---|---|---|---|---|
 | **1. Tiền xử lý dò biên** | Chuyển xám, lọc Gaussian (`cv2.GaussianBlur`) | `detect_corners` (TV1) | `gaussian_ksize`, `sigma` | `ksize = (5, 5)`, `sigma = 1.2` | Làm mượt nhiễu hạt giấy và vân chữ nhỏ để tránh sinh cạnh giả khi tính đạo hàm dò biên. |
 | **2. Phát hiện biên** | Dò biên Canny (`cv2.Canny`) + phép đóng (`cv2.morphologyEx`) | `detect_corners` (TV1) | `canny_low`, `canny_high`, `morph_ksize` | `canny_low = 50`, `canny_high = 150`, `ksize = (5, 5)` | Tỷ lệ ngưỡng $1:3$ theo khuyến nghị của Canny; phép đóng nối liền các đoạn biên tờ giấy bị đứt quãng. |
 | **3. Tìm contour & xấp xỉ đa giác** | `cv2.findContours` (`RETR_LIST`) + `cv2.approxPolyDP` | `detect_corners` (TV1) | `top_k_contours`, `approx_eps_ratio` | `top_k = 5`, `eps = 0.02 * perimeter` | Xét 5 contour có diện tích lớn nhất; hệ số $2\%$ chu vi đủ để làm phẳng viền giấy hơi cong nhẹ về đúng 4 đỉnh. |
-| **4. Kiểm tra tứ giác & chuẩn hóa góc** | Kiểm định hình học + sắp xếp theo tổng/hiệu tọa độ | `detect_corners`, `order_corners` (TV1) | `min_area_ratio`, `angle_range` | `min_area_ratio = 0.15`, góc trong $[45^\circ, 135^\circ]$ | Loại bỏ các contour nhiễu quá nhỏ hoặc bị suy biến nhọn trước khi tính ma trận Homography. |
-| **5. Biến đổi phối cảnh** | `cv2.getPerspectiveTransform` + `cv2.warpPerspective` | `warp_with_corners` (TV1) | `interpolation`, `border_mode` | `INTER_CUBIC`, `BORDER_REPLICATE` | Nội suy bậc ba giữ độ sắc nét của ký tự tốt hơn nội suy tuyến tính sau khi kéo giãn phối cảnh. |
-| **6. Loại bỏ bóng đổ** | Ước lượng nền bằng phép đóng hình thái học nhân lớn + chia chuẩn hóa | `enhance` (TV2) | `bg_kernel_size` | `31` | Nhân hình thái học lớn hơn độ dày nét chữ giúp xóa chữ, chỉ giữ lại trường độ sáng nền/bóng đổ để chia chuẩn hóa. |
-| **7. Khử nhiễu & Tăng tương phản** | Lọc trung vị + `cv2.createCLAHE` | `enhance` (TV2) | `denoise_ksize`, `clipLimit`, `tileGridSize` | `ksize = 3`, `clipLimit = 2.0`, `tileGridSize = (8, 8)` | Tăng độ tương phản cục bộ giữa nét chữ mờ và nền giấy mà không khuếch đại nhiễu quá mức ở vùng đồng nhất. |
-| **8. Nhị phân hóa** | Ngưỡng thích nghi Gaussian (`cv2.adaptiveThreshold`) | `enhance` (TV2) | `block_size`, `c_offset` | `block_size = 21`, `c_offset = 10` | Thích nghi cục bộ theo từng vùng lân cận $21 \times 21$, giữ nét chữ rõ và nền giấy trắng sạch. |
+| **4. Kiểm tra tứ giác & bảo vệ lề trang** | Kiểm định hình học + kiểm tra độ sáng vùng ngoài tứ giác | `detect_corners` (TV1), `_is_inner_border_on_clean_page` (TV4) | `min_area_ratio`, `angle_range`, `bright_ratio` | `min_area_ratio = 0.15`, góc $[45^\circ, 135^\circ]$, vùng ngoài $\ge 85\%$ sáng $\ge 225$ | Loại bỏ contour nhiễu; đặc biệt **chống cắt nhầm vào khung kẻ trang trí bên trong trang bìa** khi ảnh đầu vào đã là trang giấy trắng thẳng sẵn. |
+| **5. Biến đổi phối cảnh** | `cv2.getPerspectiveTransform` + `cv2.warpPerspective` | `warp_with_corners` (TV1), `process_document` (TV4) | `interpolation`, `border_mode` | `INTER_CUBIC`, `BORDER_REPLICATE` | Nội suy bậc ba giữ độ nét ký tự; tự động bỏ qua nội suy nếu 4 góc trùng với khung ảnh gốc ($\text{sai số} < 1.5\text{ px}$). |
+| **6. Loại bỏ bóng đổ thích nghi** | Ước lượng nền bằng phép đóng hình thái học nhân elip + chia chuẩn hóa | `enhance` (TV2), `process_document` (TV4) | `bg_kernel_size` | $\max(31, \text{odd}(\min(H, W) / 18))$ | Tự động co giãn kích thước nhân theo độ phân giải ảnh để xóa sạch bóng đổ mà không làm tối chữ tiêu đề lớn hoặc con dấu. |
+| **7. Làm sắc nét & Tách mặt nạ chữ–nền** | Unsharp Masking ($\sigma=1.0$) + `adaptiveThreshold` + lọc thành phần liên thông | `_refine_document_appearance` (TV4) | `block_size`, `c_offset`, `min_cc_area` | `block_size` tỉ lệ $\min(H,W)/28$, `c_offset = 12`, xóa hạt $\le 3\text{ px}$ | Khôi phục độ nét ký tự và loại bỏ hoàn toàn các hạt nhiễu nén JPEG li ti trên mặt giấy trắng. |
+| **8. Làm trắng nền mềm bảo toàn nét chữ** | Kéo giãn phân vị mức xám kết hợp hiệu chỉnh Gamma trên vùng chữ | `_refine_document_appearance` (TV4) | `p_low`, `p_high`, `gamma` | Phân vị $[10\%, 96\%]$, $\gamma = 1.25$, nền $= 255$ | Đưa nền giấy về trắng tuyệt đối (`255`) nhưng giữ nguyên biên xám chống răng cưa (anti-aliasing), khắc phục triệt để lỗi chữ nhỏ bị phình bết của nhị phân cứng `0/255`. |
 
 ### 4.3. Cơ chế kiểm tra tứ giác hợp lệ và fallback — TV1
 
@@ -279,10 +282,58 @@ enhance-docs-quality/
    ```
 
 ### 5.3. Ứng dụng web — TV4
-- *[Cập nhật ở Tuần 2–3: Kiến trúc client–server, luồng xử lý tải ảnh lên → xử lý → xem Trước/Sau → tải ảnh kết quả về máy, kèm ảnh chụp màn hình]*
+
+Ứng dụng Web được thiết kế hướng tới **trải nghiệm sản phẩm hoàn chỉnh cho người dùng cuối (End-User Product)** theo kiến trúc **Client–Server tách biệt**, kết nối trực tiếp với luồng tích hợp `process_document()` trong `core/pipeline.py`:
+
+```mermaid
+sequenceDiagram
+    participant U as Người dùng (Trình duyệt)
+    participant FE as Frontend (HTML5 Canvas / app.js)
+    participant BE as Backend FastAPI (web/app.py)
+    participant CORE as Package Core (pipeline.py)
+
+    U->>FE: 1. Kéo thả hoặc chọn ảnh chụp tài liệu (.JPG / .PNG)
+    FE->>U: 2. Hiển thị trạng thái Loading ("Đang xử lý tài liệu...")
+    FE->>BE: POST /api/scan (file ảnh)
+    BE->>CORE: handle_auto_scan() -> process_document(image, manual_corners=None)
+    CORE-->>BE: detection, corners_used, warped_image, enhanced_image, timing_ms
+    BE-->>FE: JSON (image_id, corners, is_valid, timing_ms, images Base64 .PNG & .JPG)
+    FE->>U: 3. Hiển thị 2 khung Trước (Ảnh gốc) & Sau (Ảnh kết quả) đặt cạnh nhau
+    opt Khi is_valid = False hoặc người dùng bấm "Chỉnh 4 góc"
+        U->>FE: Kéo 4 đỉnh [TL, TR, BR, BL] trên Ảnh gốc & bấm "Áp dụng 4 góc"
+        FE->>BE: POST /api/rewarp (image_id, corners=[[x1,y1]..[x4,y4]])
+        BE->>CORE: handle_manual_rewarp() -> process_document(image, manual_corners)
+        CORE-->>BE: Ảnh phẳng & tăng cường mới
+        BE-->>FE: JSON cập nhật Ảnh kết quả
+    end
+    U->>FE: 4. Chọn nút Tải về (.PNG hoặc .JPG)
+```
+
+1. **Thiết kế Backend REST API (`web/app.py`):**
+   - **`POST /api/scan`:** Nhận file ảnh người dùng kéo thả hoặc chọn từ máy, giải mã sang mảng BGR OpenCV, lưu ảnh gốc vào bộ nhớ đệm phiên làm việc `_IMAGE_CACHE` theo `image_id` và gọi `handle_auto_scan()`. Kết quả trả về gồm tọa độ 4 góc `corners`, trạng thái kiểm định `is_valid`, thời gian thực thi `timing_ms` và dữ liệu ảnh kết quả được mã hóa sẵn ở cả hai định dạng `.PNG` (`images.enhanced`) và `.JPG` (`images.enhanced_jpg`).
+   - **`POST /api/rewarp`:** Nhận `image_id` cùng tọa độ 4 góc `corners` sau khi người dùng kéo chỉnh trên ảnh gốc, lấy lại ảnh gốc từ bộ nhớ đệm mà không cần tải lại file và gọi `handle_manual_rewarp()` để cập nhật tức thì ảnh kết quả.
+
+2. **Luồng trải nghiệm người dùng 4 bước (`web/static/index.html`, `style.css`, `app.js`):**
+   - **Bước 1 — Kéo thả hoặc Chọn ảnh (`#drop-zone`):** Người dùng kéo thả trực tiếp file ảnh chụp tài liệu vào vùng tải ảnh hoặc bấm chọn file từ điện thoại/máy tính.
+   - **Bước 2 — Xử lý & Hiển thị trạng thái chờ (`#loading-overlay`):** Trong lúc hệ thống thực thi pipeline dưới Backend, giao diện hiển thị biểu tượng xoay (spinner) kèm thông báo *"Đang xử lý tài liệu, vui lòng đợi..."*.
+   - **Bước 3 — Đối chiếu Trước / Sau đặt cạnh nhau (`#workspace`):** Giao diện chia thành 2 khung song song: bên trái là **Ảnh gốc (Trước)** và bên phải là **Ảnh kết quả (Sau)** đã được cắt phẳng phối cảnh, khử bóng đổ và làm rõ nét chữ để người dùng so sánh trực tiếp.
+   - **Bước 4 — Tải ảnh kết quả về máy (`.PNG` / `.JPG`):** Cung cấp 2 nút tải về trực tiếp ứng với 2 định dạng phổ biến: **⬇ Tải về .PNG** (bảo toàn chất lượng sắc nét không nén mất mát) và **⬇ Tải về .JPG** (dung lượng gọn nhẹ).
 
 ### 5.4. Giao diện kéo 4 góc thủ công — TV4
-- *[Cập nhật ở Tuần 4: Cơ chế kích hoạt khi `is_valid == False` hoặc khi người dùng bấm nút chỉnh góc, cách quy đổi tọa độ Canvas về tọa độ ảnh gốc]*
+
+Để giữ cho giao diện so sánh Trước/Sau luôn sạch sẽ nhưng vẫn xử lý tốt các ca ảnh khó, cơ chế **kéo 4 góc thủ công (Human-in-the-loop Fallback)** được tích hợp ngay trên khung **Ảnh gốc (Trước)** (`<canvas id="input-canvas">`):
+
+1. **Cơ chế kích hoạt thông minh:**
+   - **Khi phát hiện tự động hợp lệ (`is_valid == True`):** Khung bên trái hiển thị ảnh gốc nguyên bản để người dùng đối chiếu trực diện với ảnh kết quả bên phải. Nếu muốn tự điều chỉnh lại vùng cắt, người dùng chỉ cần bấm nút **"Chỉnh 4 góc"** ở góc trên của khung ảnh gốc.
+   - **Khi phát hiện tự động không đủ tin cậy (`is_valid == False`):** Giao diện tự động hiển thị thanh thông báo `#fallback-banner` và bật sẵn 4 chấm tròn `[TL, TR, BR, BL]` tại vị trí gợi ý trên ảnh gốc để người dùng kéo vào đúng 4 góc trang giấy rồi bấm **"Áp dụng 4 góc"**.
+
+2. **Quy đổi hệ tọa độ giữa Canvas hiển thị và Ảnh gốc:**
+   - Do ảnh chụp từ điện thoại thường có độ phân giải lớn $(W_{\text{orig}}, H_{\text{orig}})$ trong khi khung hiển thị trên trình duyệt có kích thước thu gọn $(W_{\text{disp}}, H_{\text{disp}})$, hệ thống duy trì hai hệ số tỷ lệ:
+     $$s_x = \frac{W_{\text{orig}}}{W_{\text{disp}}}, \qquad s_y = \frac{H_{\text{orig}}}{H_{\text{disp}}}$$
+   - **Khi vẽ từ dữ liệu lên Canvas:** Mỗi đỉnh $(x_{\text{orig}}, y_{\text{orig}})$ được chiếu sang tọa độ điểm ảnh trên Canvas $(x_c, y_c) = \left(\frac{x_{\text{orig}}}{s_x}, \frac{y_{\text{orig}}}{s_y}\right)$.
+   - **Khi người dùng kéo thả trên Canvas:** Sự kiện `mousedown` / `touchstart` tính khoảng cách Euclid từ vị trí con trỏ $(p_x, p_y)$ tới cả 4 đỉnh trên Canvas và bắt đỉnh gần nhất nếu khoảng cách $d \le 22\text{ px}$. Khi di chuyển (`mousemove` / `touchmove`), tọa độ mới trên ảnh gốc được tính ngược và kẹp biên an toàn:
+     $$x_{\text{orig}} = \text{clip}\!\left(p_x \cdot s_x,\; 0,\; W_{\text{orig}} - 1\right), \qquad y_{\text{orig}} = \text{clip}\!\left(p_y \cdot s_y,\; 0,\; H_{\text{orig}} - 1\right)$$
+   - Khi gửi mảng 4 đỉnh về `POST /api/rewarp`, hàm `process_document` tiếp tục gọi `order_corners()` để tự động sắp xếp lại đúng thứ tự chuẩn `[TL, TR, BR, BL]`, đảm bảo ma trận Homography không bị lật hoặc xoắn.
 
 ---
 
@@ -334,7 +385,15 @@ enhance-docs-quality/
 - *[Thống kê tỷ lệ ảnh tự động thất bại và mức cải thiện IoU, PSNR/SSIM sau khi người dùng kéo 4 góc thủ công]*
 
 ### 7.4. Thời gian xử lý
-- *[Thống kê thời gian chạy trung bình của từng mô-đun: `detect_corners`, `warp_with_corners`, `enhance`]*
+
+Hàm tích hợp `process_document()` trong `core/pipeline.py` sử dụng bộ đếm độ phân giải cao `time.perf_counter()` để đo độc lập thời gian thực thi của từng giai đoạn và trả về trực tiếp trên giao diện Web. Bảng dưới đây thống kê thời gian xử lý thực tế trên bộ 36 ảnh kiểm thử (`data/raw/doc_001.jpg` đến `doc_036.jpg`) sau khi tích hợp đầy đủ cơ chế bảo vệ lề trang giấy và làm trắng nền bảo toàn nét chữ:
+
+| Giai đoạn xử lý | Hàm thực thi | Thời gian trung bình (ms) | Nhỏ nhất – Lớn nhất (ms) | Tỷ trọng (%) | Nhận xét kỹ thuật |
+|---|---|:---:|:---:|:---:|---|
+| **1. Phát hiện biên, 4 góc & Kiểm tra lề** | `detect_corners` + `_is_inner_border_on_clean_page` | $12.77$ | $5.84 - 35.87$ | $20.90\%$ | Chuẩn hóa chiều cao tạm thời về `proc_height = 800` khi dò biên Canny và kiểm tra phân bố độ sáng vùng ngoài tứ giác. |
+| **2. Biến đổi phối cảnh** | `warp_with_corners` | $4.16$ | $2.72 - 9.94$ | $6.81\%$ | Phép nhân ma trận Homography $3 \times 3$ và nội suy bậc ba `INTER_CUBIC` (tự động bỏ qua nội suy khi góc trùng khung gốc). |
+| **3. Khử bóng & Tinh chỉnh nét chữ mềm** | `enhance` + `_refine_document_appearance` | $44.18$ | $29.81 - 85.86$ | $72.29\%$ | Gồm phép đóng hình thái học nhân lớn khử bóng, làm sắc nét Unsharp Mask, lọc nhiễu liên thông ($\le 3\text{ px}$) và kéo giãn tương phản mềm bảo toàn chống răng cưa. |
+| **Tổng cộng End-to-End** | `process_document` | **$61.11$** | **$43.25 - 125.62$** | **$100\%$** | Tốc độ trung bình đạt $\approx 16.4\text{ ảnh/giây}$ ($\approx 0.06\text{ giây/ảnh}$), đảm bảo phản hồi tức thì cho người dùng trên Web. |
 
 ---
 
@@ -361,11 +420,18 @@ enhance-docs-quality/
 
 ---
 
-## 9. Demo sản phẩm
+## 9. Demo sản phẩm — TV4
 
-*(Hoàn thiện ở Tuần 7)*
-- **Link video demo:** [...]
-- **Kịch bản demo:** (1) Quét ảnh đơn giản tự động, (2) Quét ảnh có bóng đổ nặng, (3) Trường hợp nền phức tạp kích hoạt kéo 4 góc thủ công, (4) Xem Trước/Sau và tải ảnh kết quả về máy.
+- **Link video demo:** *[Cập nhật link Google Drive / YouTube khi nộp bài]*
+- **Kịch bản trình diễn thực tế trên Ứng dụng Web (Thời lượng 2–4 phút):**
+  1. **Tình huống 1 — Kéo thả ảnh tài liệu tiêu chuẩn & nghiêng phối cảnh lớn (`doc_001.jpg`, `doc_009.jpg`):**
+     - Người dùng kéo thả trực tiếp file ảnh chụp tài liệu vào vùng tải ảnh trên trang Web.
+     - Giao diện hiển thị trạng thái *"Đang xử lý tài liệu, vui lòng đợi..."* rồi lập tức hiển thị **Ảnh gốc (Trước)** bên trái và **Ảnh kết quả (Sau)** bên phải đặt cạnh nhau để đối chiếu trực quan.
+  2. **Tình huống 2 — Xử lý ảnh chụp có bóng đổ nặng (`doc_019.jpg`):**
+     - Tải lên ảnh tài liệu có bóng đổ chéo rõ rệt; so sánh trực tiếp khung Trước (có bóng tối che chữ) và khung Sau (nền giấy trắng sạch đồng nhất, chữ rõ nét).
+  3. **Tình huống 3 — Chỉnh 4 góc thủ công trên nền đồng màu/phức tạp (`doc_025.jpg`) & Tải ảnh kết quả:**
+     - Khi ảnh đầu vào có nền sáng màu trùng màu giấy (`is_valid = False`), ứng dụng tự động hiển thị thông báo hướng dẫn và bật 4 chấm tròn `[TL, TR, BR, BL]` ngay trên khung **Ảnh gốc (Trước)**.
+     - Người dùng kéo 4 đỉnh vào đúng 4 góc trang giấy, bấm **"Áp dụng 4 góc"** để nhận bản quét phẳng sạch bên khung phải, sau đó bấm **"⬇ Tải về .PNG"** hoặc **"⬇ Tải về .JPG"** để lưu tài liệu về máy.
 
 ---
 
@@ -392,7 +458,61 @@ enhance-docs-quality/
 
 ## Phụ lục
 
-- **Phụ lục A:** Bảng đóng góp chi tiết từng thành viên
-- **Phụ lục B:** Bảng tham số đầy đủ của pipeline
-- **Phụ lục C:** Thêm ảnh kết quả thực nghiệm
-- **Phụ lục D:** Hướng dẫn cài đặt và chạy hệ thống
+### Phụ lục A: Bảng đóng góp chi tiết từng thành viên
+
+| Thành viên | Mô-đun mã nguồn sở hữu | Mục báo cáo phụ trách | Các đầu việc đã thực hiện | Tỷ lệ |
+|---|---|---|---|:---:|
+| **Nguyễn Thị Ngọc Mai (TV1)** | `core/detector.py`<br>`core/warp.py`<br>`experiments/tv1_sandbox.py` | Mục 2.1 – 2.4, 4.3, 8.1 | Cài đặt lọc Gaussian, dò biên Canny + phép đóng hình thái học, xấp xỉ đa giác `approxPolyDP`, kiểm định tứ giác lồi hợp lệ (`validate_quadrilateral`), gợi ý góc fallback (`minAreaRect`) và biến đổi phối cảnh Homography $3 \times 3$. | 25% |
+| **Khổng Thị Thùy Linh (TV2)** | `core/enhancer.py`<br>`experiments/tv2_sandbox.py` | Mục 2.5 – 2.7, 8.2 | Cài đặt chuyển đổi đa mức xám, ước lượng nền bằng phép đóng hình thái học nhân elip lớn để chia chuẩn hóa khử bóng đổ (`remove_shadow_bg`), khử nhiễu (`median`/`bilateral`), cân bằng biểu đồ cục bộ CLAHE và nhị phân hóa (`otsu`, `adaptive_mean`, `adaptive_gaussian`). | 25% |
+| **Nguyễn Thị Anh Ngọc (TV3)** | `experiments/metrics.py`<br>`experiments/evaluate.py`<br>`data/*` | Mục 2.8, Chương 3, 6, 7.1 – 7.3, 8.3 | Thu thập và gán nhãn tọa độ 4 góc bộ dữ liệu (`metadata.csv`), cài đặt bộ độ đo định lượng (sai số góc Euclid, Polygon IoU, PSNR, SSIM, `bg_std`, `fg_bg_contrast`), thiết kế và vận hành các kịch bản thực nghiệm Ablation Study & đánh giá Fallback. | 25% |
+| **Đoàn Thị Hồng Nhung (TV4)** | `core/pipeline.py`<br>`web/app.py`<br>`web/static/*` | Mục 4.1 – 4.2 (cập nhật tích hợp), 5.1 – 5.4, 7.4, Chương 9, Phụ lục D | Tích hợp và tối ưu pipeline end-to-end `process_document()` (bổ sung bảo vệ lề trang giấy `_is_inner_border_on_clean_page` và làm trắng nền bảo toàn nét chữ `_refine_document_appearance`), xây dựng Backend FastAPI (`/api/scan`, `/api/rewarp`), phát triển giao diện Web kéo thả ảnh, xem Trước/Sau đặt cạnh nhau, chỉnh 4 góc thủ công và tải ảnh kết quả (`.PNG` / `.JPG`). | 25% |
+
+### Phụ lục B: Bảng tham số đầy đủ của pipeline
+
+| Nhóm mô-đun | Tên tham số trong `config` | Giá trị mặc định | Kiểu dữ liệu | Ý nghĩa kỹ thuật |
+|---|---|:---:|:---:|---|
+| **Dò biên & Góc (`detector.py`)** | `proc_height` | `800` | `int` | Chiều cao chuẩn hóa tạm thời khi dò biên để tăng tốc độ xử lý |
+| | `gaussian_ksize` | `(5, 5)` | `tuple[int, int]` | Kích thước nhân lọc làm mịn Gaussian |
+| | `gaussian_sigma` | `1.2` | `float` | Độ lệch chuẩn $\sigma$ của bộ lọc Gaussian |
+| | `canny_low`, `canny_high` | `50`, `150` | `int` | Ngưỡng kép dưới và trên của thuật toán dò biên Canny |
+| | `morph_ksize` | `(5, 5)` | `tuple[int, int]` | Kích thước nhân phép đóng hình thái học nối liền biên đứt |
+| | `top_k_contours` | `5` | `int` | Số lượng contour có diện tích lớn nhất đưa vào xét duyệt |
+| | `approx_eps_ratio` | `0.02` | `float` | Hệ số $\epsilon$ xấp xỉ đa giác theo tỷ lệ chu vi contour |
+| | `min_area_ratio` | `0.15` | `float` | Tỷ lệ diện tích tối thiểu của tứ giác tài liệu so với khung hình |
+| | `min_angle_deg`, `max_angle_deg` | `45.0`, `135.0` | `float` | Khoảng góc trong hợp lệ tại mỗi đỉnh của tứ giác (độ) |
+| **Tăng cường (`enhancer.py`)** | `bg_kernel_size` | $\max(31, \text{odd}(\min(H,W)/18))$ | `int` | Kích thước nhân elip đóng hình thái học ước lượng nền khử bóng (tự động tỉ lệ theo ảnh) |
+| | `denoise_method` | `"median"` | `str` | Phương pháp lọc nhiễu (`"median"` hoặc `"bilateral"`) |
+| | `denoise_ksize` | `3` | `int` | Kích thước cửa sổ lọc trung vị Median |
+| | `clahe_clip_limit` | `2.0` | `float` | Ngưỡng giới hạn khuếch đại tương phản của CLAHE |
+| | `clahe_tile_grid` | `(8, 8)` | `tuple[int, int]` | Số ô lưới chia cục bộ trong thuật toán CLAHE |
+| | `threshold_method` | `"adaptive_gaussian"` | `str` | Thuật toán nhị phân hóa (`"adaptive_gaussian"`, `"adaptive_mean"`, `"otsu"`) |
+| | `block_size` | `21` | `int` | Kích thước vùng lân cận cục bộ (số lẻ $\ge 3$) khi tính ngưỡng thích nghi |
+| | `c_offset` | `10` | `float` | Hằng số trừ bù $C$ trong phân ngưỡng thích nghi |
+| **Điều phối & Hậu xử lý (`pipeline.py`)** | `protect_inner_border` | `True` | `bool` | Tự động giữ nguyên lề trắng khi phát hiện tứ giác chỉ là khung kẻ trang trí bên trong trang giấy |
+| | `soft_binarize` | `True` | `bool` | Làm trắng nền `255` kết hợp Unsharp Mask, lọc hạt nhiễu $\le 3\text{ px}$ và kéo giãn tương phản mềm chống răng cưa |
+
+### Phụ lục C: Thêm ảnh kết quả thực nghiệm
+- *(Tổng hợp hình ảnh minh họa từ thư mục `experiments/outputs/`)*
+
+### Phụ lục D: Hướng dẫn cài đặt và chạy hệ thống — TV4
+
+1. **Yêu cầu môi trường:** Python 3.10 trở lên. Khuyến khích sử dụng môi trường ảo (`venv`).
+2. **Cài đặt các thư viện phụ thuộc:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Khởi chạy ứng dụng Web (Giao diện đầy đủ):**
+   ```bash
+   python -m web.app
+   ```
+   Hoặc chạy qua Uvicorn với chế độ tự động tải lại khi sửa code:
+   ```bash
+   uvicorn web.app:app --host 127.0.0.1 --port 8000 --reload
+   ```
+   Sau khi khởi động, mở trình duyệt truy cập địa chỉ **`http://127.0.0.1:8000`**.
+4. **Chạy các kịch bản kiểm thử và đánh giá định lượng qua dòng lệnh (CLI):**
+   ```bash
+   python experiments/tv1_sandbox.py   # Kiểm thử phát hiện 4 góc & làm phẳng (TV1)
+   python experiments/tv2_sandbox.py   # Kiểm thử khử bóng, CLAHE & nhị phân hóa (TV2)
+   python experiments/evaluate.py      # Chạy đánh giá định lượng trên bộ dữ liệu (TV3)
+   ```
