@@ -26,75 +26,181 @@ import numpy as np
 
 
 DEFAULT_ENHANCE_CONFIG: dict[str, Any] = {
-    "bg_kernel_size": 31,                  # Kích thước nhân hình thái học ước lượng nền khử bóng
-    "denoise_method": "median",            # Phương pháp khử nhiễu: "median" hoặc "bilateral"
-    "denoise_ksize": 3,                    # Kích thước nhân lọc trung vị
-    "clahe_clip_limit": 2.0,               # Ngưỡng giới hạn khuếch đại tương phản của CLAHE
-    "clahe_tile_grid": (8, 8),             # Kích thước lưới ô cục bộ của CLAHE
-    "threshold_method": "adaptive_gaussian",  # "adaptive_gaussian", "adaptive_mean", hoặc "otsu"
-    "block_size": 21,                      # Kích thước vùng lân cận cho Adaptive Threshold (số lẻ >= 3)
-    "c_offset": 10,                        # Hằng số C trừ đi từ trung bình cục bộ
+    "bg_kernel_size": 31,
+    "denoise_method": "median",          # "median" hoặc "bilateral"
+    "denoise_ksize": 3,
+    "bilateral_d": 9,
+    "bilateral_sigma_color": 50,
+    "bilateral_sigma_space": 50,
+    "clahe_clip_limit": 2.0,
+    "clahe_tile_grid": (8, 8),
+    "threshold_method": "adaptive_gaussian",
+    "block_size": 21,
+    "c_offset": 10,
 }
+
+def _validate_gray(gray: np.ndarray) -> np.ndarray:
+    """Kiểm tra ảnh xám đầu vào và chuẩn hóa về uint8."""
+    if gray is None or not isinstance(gray, np.ndarray) or gray.size == 0:
+        raise ValueError("Ảnh đầu vào không hợp lệ (None hoặc rỗng).")
+    if gray.ndim != 2:
+        raise ValueError("Hàm này yêu cầu ảnh xám một kênh (HxW).")
+    if gray.dtype != np.uint8:
+        gray = np.clip(gray, 0, 255).astype(np.uint8)
+    return gray
 
 
 def to_grayscale(image: np.ndarray) -> np.ndarray:
-    """Bước 1: Chuyển ảnh BGR sang ảnh đa mức xám (Grayscale 1 kênh, uint8).
+    """Chuyển ảnh BGR 3 kênh sang ảnh đa mức xám 1 kênh uint8."""
+    if image is None or not isinstance(image, np.ndarray) or image.size == 0:
+        raise ValueError("Ảnh đầu vào không hợp lệ (None hoặc rỗng).")
 
-    TODO (TV2 - Tuần 2):
-    - Kiểm tra nếu `image` có 3 kênh thì chuyển sang xám theo công thức độ chói chuẩn
-      $Y = 0.299R + 0.587G + 0.114B$ (hoặc `cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)`).
-    """
+    if image.dtype != np.uint8:
+        image = np.clip(image, 0, 255).astype(np.uint8)
+
+    if image.ndim == 2:
+        return image.copy()
+
     if image.ndim == 3 and image.shape[2] == 3:
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    return image.copy()
+
+    raise ValueError("Ảnh phải có dạng HxW (xám) hoặc HxWx3 (BGR).")
+
+
 
 
 def remove_shadow_bg(gray: np.ndarray, cfg: dict[str, Any]) -> np.ndarray:
-    """Bước 2: Ước lượng nền chiếu sáng và loại bỏ bóng đổ.
-
-    TODO (TV2 - Tuần 3):
-    - Tạo phần tử cấu trúc hình thái học kích thước lớn `k = cfg["bg_kernel_size"]`.
-    - Thực hiện phép đóng (`cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)`) hoặc
-      `dilate` + `medianBlur` để xóa chữ và giữ lại mặt nền chứa bóng đổ `bg`.
-    - Chia chuẩn hóa: `norm = cv2.divide(gray, bg, scale=255)` để làm phẳng độ sáng nền.
     """
-    _ = cfg
-    return gray.copy()
+    Ước lượng nền sáng bằng Morphological Closing rồi chia chuẩn hóa.
+
+    Closing giúp lấp các vùng tối nhỏ (ví dụ nét chữ) để ước lượng nền
+    chiếu sáng. Kernel cần đủ lớn so với độ dày nét chữ và kích thước ảnh.
+    """
+    gray = _validate_gray(gray)
+    cfg = cfg or {}
+
+    ksize = int(cfg.get("bg_kernel_size", DEFAULT_ENHANCE_CONFIG["bg_kernel_size"]))
+    ksize = max(3, ksize)
+    if ksize % 2 == 0:
+        ksize += 1
+
+    kernel = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE, (ksize, ksize)
+    )
+    background = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+
+    # Tránh chia cho 0 tại các điểm nền rất tối.
+    background = np.maximum(background, 1)
+    corrected = cv2.divide(gray, background, scale=255)
+
+    # Giữ dải mức xám đầy đủ sau chuẩn hóa.
+    corrected = cv2.normalize(
+        corrected, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX
+    )
+    return corrected.astype(np.uint8)
 
 
 def denoise_image(gray: np.ndarray, cfg: dict[str, Any]) -> np.ndarray:
-    """Bước 3: Khử nhiễu hạt trên ảnh xám trước khi tăng tương phản và nhị phân hóa.
+    """Khử nhiễu bằng Median hoặc Bilateral theo cấu hình."""
+    gray = _validate_gray(gray)
+    cfg = cfg or {}
 
-    TODO (TV2 - Tuần 3):
-    - Nếu `cfg["denoise_method"] == "median"`: dùng `cv2.medianBlur(gray, cfg["denoise_ksize"])`.
-    - Nếu `cfg["denoise_method"] == "bilateral"`: dùng `cv2.bilateralFilter(...)` để giữ sắc biên chữ.
-    """
-    _ = cfg
-    return gray.copy()
+    method = str(cfg.get("denoise_method", "median")).lower()
+
+    if method == "median":
+        ksize = int(cfg.get("denoise_ksize", 3))
+        ksize = max(3, ksize)
+        if ksize % 2 == 0:
+            ksize += 1
+        return cv2.medianBlur(gray, ksize)
+
+    if method == "bilateral":
+        d = int(cfg.get("bilateral_d", 9))
+        sigma_color = float(cfg.get("bilateral_sigma_color", 50))
+        sigma_space = float(cfg.get("bilateral_sigma_space", 50))
+        return cv2.bilateralFilter(
+            gray, d, sigma_color, sigma_space
+        )
+
+    raise ValueError(
+        "denoise_method không hợp lệ. Chọn 'median' hoặc 'bilateral'."
+    )
 
 
 def apply_clahe(gray: np.ndarray, cfg: dict[str, Any]) -> np.ndarray:
-    """Bước 4: Tăng cường độ tương phản cục bộ bằng CLAHE.
+    """Tăng cường tương phản cục bộ bằng CLAHE."""
+    gray = _validate_gray(gray)
+    cfg = cfg or {}
 
-    TODO (TV2 - Tuần 3):
-    - Khởi tạo `clahe = cv2.createCLAHE(clipLimit=cfg["clahe_clip_limit"], tileGridSize=cfg["clahe_tile_grid"])`.
-    - Trả về `clahe.apply(gray)`.
-    """
-    _ = cfg
-    return gray.copy()
+    clip_limit = float(
+        cfg.get("clahe_clip_limit", DEFAULT_ENHANCE_CONFIG["clahe_clip_limit"])
+    )
+    tile_grid = tuple(
+        cfg.get("clahe_tile_grid", DEFAULT_ENHANCE_CONFIG["clahe_tile_grid"])
+    )
+
+    if clip_limit <= 0:
+        raise ValueError("clahe_clip_limit phải lớn hơn 0.")
+    if len(tile_grid) != 2 or int(tile_grid[0]) <= 0 or int(tile_grid[1]) <= 0:
+        raise ValueError("clahe_tile_grid phải gồm 2 số nguyên dương.")
+
+    clahe = cv2.createCLAHE(
+        clipLimit=clip_limit,
+        tileGridSize=(int(tile_grid[0]), int(tile_grid[1])),
+    )
+    return clahe.apply(gray)
 
 
 def apply_threshold(gray: np.ndarray, cfg: dict[str, Any]) -> np.ndarray:
-    """Bước 5: Nhị phân hóa ảnh tài liệu để tạo nền giấy trắng sạch và chữ đen rõ nét.
-
-    TODO (TV2 - Tuần 2):
-    Hỗ trợ 3 lựa chọn trong `cfg["threshold_method"]` (phục vụ cả sản phẩm và thí nghiệm Tuần 5 của TV3):
-    - `"adaptive_gaussian"`: dùng `cv2.adaptiveThreshold(..., cv2.ADAPTIVE_THRESH_GAUSSIAN_C, ...)`
-    - `"adaptive_mean"`: dùng `cv2.adaptiveThreshold(..., cv2.ADAPTIVE_THRESH_MEAN_C, ...)`
-    - `"otsu"`: dùng `cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)`
     """
-    _ = cfg
-    return gray.copy()
+    Nhị phân hóa ảnh, tạo chữ tối trên nền sáng.
+
+    Hỗ trợ:
+    - "otsu"
+    - "adaptive_mean"
+    - "adaptive_gaussian"
+    """
+    gray = _validate_gray(gray)
+    cfg = cfg or {}
+
+    method = str(cfg.get("threshold_method", "adaptive_gaussian")).lower()
+
+    if method == "otsu":
+        _, binary = cv2.threshold(
+            gray,
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )
+        return binary
+
+    if method in ("adaptive_mean", "adaptive_gaussian"):
+        block_size = int(cfg.get("block_size", 21))
+        if block_size < 3:
+            raise ValueError("block_size phải lớn hơn hoặc bằng 3.")
+        if block_size % 2 == 0:
+            raise ValueError("block_size phải là số lẻ.")
+
+        c_offset = float(cfg.get("c_offset", 10))
+        adaptive_method = (
+            cv2.ADAPTIVE_THRESH_MEAN_C
+            if method == "adaptive_mean"
+            else cv2.ADAPTIVE_THRESH_GAUSSIAN_C
+        )
+
+        return cv2.adaptiveThreshold(
+            gray,
+            255,
+            adaptive_method,
+            cv2.THRESH_BINARY,
+            block_size,
+            c_offset,
+        )
+
+    raise ValueError(
+        "threshold_method không hợp lệ. Chọn 'otsu', "
+        "'adaptive_mean' hoặc 'adaptive_gaussian'."
+    )
 
 
 def enhance(
@@ -105,34 +211,37 @@ def enhance(
     binarize: bool = True,
     config: dict[str, Any] | None = None,
 ) -> np.ndarray:
-    """Hàm giao diện chính: Tăng cường chất lượng ảnh tài liệu sau khi đã nắn phẳng (Stub v0).
+    """
+    Hàm giao diện chính: tăng cường chất lượng ảnh tài liệu đã nắn phẳng.
 
-    CHÚ Ý: Không thay đổi tên hàm và các tham số cờ (`remove_shadow`, `denoise`, `use_clahe`,
-    `binarize`) vì TV3 sẽ bật/tắt các cờ này khi chạy thí nghiệm Ablation Study ở Tuần 5.
+    Giữ nguyên tên hàm và tham số cờ để TV3 có thể bật/tắt từng bước
+    trong Ablation Study.
 
     Args:
-        image: Ảnh tài liệu phẳng đầu vào (`np.ndarray`, `HxWx3` hoặc `HxW`, dtype `uint8`).
-        remove_shadow: Bật/tắt bước ước lượng nền khử bóng đổ (`remove_shadow_bg`).
-        denoise: Bật/tắt bước lọc khử nhiễu (`denoise_image`).
-        use_clahe: Bật/tắt bước tăng tương phản cục bộ (`apply_clahe`).
-        binarize: Bật/tắt bước nhị phân hóa tài liệu (`apply_threshold`).
-        config: Từ điển tham số ghi đè lên `DEFAULT_ENHANCE_CONFIG`.
+        image: Ảnh BGR (HxWx3) hoặc ảnh xám (HxW), uint8.
+        remove_shadow: Bật/tắt bước loại bỏ bóng.
+        denoise: Bật/tắt bước khử nhiễu.
+        use_clahe: Bật/tắt bước tăng tương phản CLAHE.
+        binarize: Bật/tắt bước nhị phân hóa.
+        config: Các tham số ghi đè DEFAULT_ENHANCE_CONFIG.
 
     Returns:
-        Ảnh tài liệu đã tăng cường chất lượng (`np.ndarray`, 1 kênh `HxW`, dtype `uint8`).
+        Ảnh xám hoặc nhị phân một kênh HxW, dtype uint8.
     """
-    if image is None or image.size == 0:
-        raise ValueError("Ảnh đầu vào không hợp lệ (None hoặc rỗng).")
-
+    gray = to_grayscale(image)
     cfg = {**DEFAULT_ENHANCE_CONFIG, **(config or {})}
 
-    out = to_grayscale(image)
+    out = gray
+
     if remove_shadow:
         out = remove_shadow_bg(out, cfg)
+
     if denoise:
         out = denoise_image(out, cfg)
+
     if use_clahe:
         out = apply_clahe(out, cfg)
+
     if binarize:
         out = apply_threshold(out, cfg)
 
