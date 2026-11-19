@@ -1,37 +1,112 @@
-image_id,file_path,condition_group,condition_desc,width,height,tl_x,tl_y,tr_x,tr_y,br_x,br_y,bl_x,bl_y
-doc_001,data/raw/doc_001.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,131.8000030517578,152.5,724.7999877929688,196.3000030517578,781.7999877929688,984.2999877929688,127.0,1002.7000122070312
-doc_002,data/raw/doc_002.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,162.3000030517578,160.3000030517578,788.7000122070312,202.60000610351562,784.0,1006.0999755859375,184.10000610351562,1008.5999755859375
-doc_003,data/raw/doc_003.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,182.3000030517578,195.8000030517578,764.2000122070312,207.89999389648438,781.7999877929688,999.0,185.39999389648438,1015.2000122070312
-doc_004,data/raw/doc_004.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,143.0,141.1999969482422,727.2000122070312,185.1999969482422,724.7000122070312,1009.5999755859375,149.39999389648438,1049.300048828125
-doc_005,data/raw/doc_005.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,180.60000610351562,185.8000030517578,719.5999755859375,195.10000610351562,718.7000122070312,1017.0999755859375,130.3000030517578,1003.4000244140625
-doc_006,data/raw/doc_006.jpg,normal_simple_bg,"Ánh sáng đều, nền tối tương phản cao, nghiêng nhẹ",900,1200,158.60000610351562,189.3000030517578,779.7000122070312,192.39999389648438,750.0,988.2999877929688,147.8000030517578,1038.5999755859375
-doc_007,data/raw/doc_007.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,230.3000030517578,126.30000305175781,813.7000122070312,83.5999984741211,757.4000244140625,931.2999877929688,109.30000305175781,941.2999877929688
-doc_008,data/raw/doc_008.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,83.0,245.0,833.5,160.10000610351562,798.9000244140625,1077.5999755859375,92.19999694824219,950.0
-doc_009,data/raw/doc_009.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,180.89999389648438,190.1999969482422,728.9000244140625,193.10000610351562,840.2999877929688,1043.5999755859375,119.80000305175781,1001.7999877929688
-doc_010,data/raw/doc_010.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,142.6999969482422,136.0,679.7999877929688,173.1999969482422,698.7999877929688,1108.199951171875,108.9000015258789,1105.300048828125
-doc_011,data/raw/doc_011.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,59.900001525878906,198.39999389648438,715.0999755859375,246.8000030517578,773.7999877929688,1099.5,125.5999984741211,932.0999755859375
-doc_012,data/raw/doc_012.jpg,tilted_perspective,"Góc chụp nghiêng lớn, biến dạng phối cảnh mạnh",900,1200,91.4000015258789,178.6999969482422,721.4000244140625,142.10000610351562,741.0999755859375,988.2999877929688,243.6999969482422,1108.0999755859375
-doc_013,data/raw/doc_013.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,134.6999969482422,185.3000030517578,749.5999755859375,144.6999969482422,785.5,1044.0999755859375,137.6999969482422,1015.7000122070312
-doc_014,data/raw/doc_014.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,144.6999969482422,136.6999969482422,775.4000244140625,178.39999389648438,710.2000122070312,992.2000122070312,131.6999969482422,1054.0999755859375
-doc_015,data/raw/doc_015.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,160.39999389648438,160.6999969482422,766.7999877929688,172.3000030517578,725.0,1005.2000122070312,114.0999984741211,995.4000244140625
-doc_016,data/raw/doc_016.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,114.5,132.60000610351562,732.7999877929688,196.8000030517578,712.0999755859375,997.5,117.9000015258789,1004.2999877929688
-doc_017,data/raw/doc_017.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,132.5,193.39999389648438,717.4000244140625,184.39999389648438,737.0999755859375,1004.0,150.39999389648438,1032.5999755859375
-doc_018,data/raw/doc_018.jpg,uneven_lighting,"Ánh sáng không đều, gradient sáng-tối rõ rệt",900,1200,110.30000305175781,142.3000030517578,763.5,193.39999389648438,722.2999877929688,1053.5999755859375,135.89999389648438,1050.0999755859375
-doc_019,data/raw/doc_019.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,133.8000030517578,163.3000030517578,741.5999755859375,202.5,763.0999755859375,997.4000244140625,186.5,1008.7999877929688
-doc_020,data/raw/doc_020.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,145.1999969482422,192.60000610351562,740.2000122070312,160.8000030517578,739.7000122070312,1016.0,126.80000305175781,1034.300048828125
-doc_021,data/raw/doc_021.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,124.80000305175781,158.3000030517578,745.5999755859375,152.6999969482422,745.0,1001.5999755859375,183.8000030517578,984.0999755859375
-doc_022,data/raw/doc_022.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,137.60000610351562,150.10000610351562,769.9000244140625,172.6999969482422,781.5999755859375,1012.0,174.8000030517578,1017.0999755859375
-doc_023,data/raw/doc_023.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,136.3000030517578,183.10000610351562,723.9000244140625,209.89999389648438,755.0,1028.0,110.80000305175781,1008.2000122070312
-doc_024,data/raw/doc_024.jpg,shadow_cast,Có bóng đổ chéo/bóng điện thoại che một phần trang giấy,900,1200,151.5,134.0,765.7999877929688,205.5,716.5999755859375,992.7999877929688,138.1999969482422,1044.0
-doc_025,data/raw/doc_025.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,113.0,195.6999969482422,763.5999755859375,194.10000610351562,751.4000244140625,992.5,151.3000030517578,1044.300048828125
-doc_026,data/raw/doc_026.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,126.0999984741211,190.0,774.5999755859375,205.39999389648438,730.7000122070312,997.7000122070312,115.0,1056.4000244140625
-doc_027,data/raw/doc_027.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,174.0,157.1999969482422,777.2999877929688,148.39999389648438,769.0,1059.699951171875,129.10000610351562,982.7000122070312
-doc_028,data/raw/doc_028.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,125.69999694824219,197.60000610351562,743.2999877929688,138.6999969482422,751.2000122070312,1003.7000122070312,133.5,1035.800048828125
-doc_029,data/raw/doc_029.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,119.80000305175781,136.10000610351562,756.7000122070312,208.5,780.2000122070312,1016.0,162.60000610351562,1044.4000244140625
-doc_030,data/raw/doc_030.jpg,similar_or_cluttered_bg,Nền sáng màu gần giống màu giấy hoặc nhiều chi tiết,900,1200,137.1999969482422,150.8000030517578,785.9000244140625,144.39999389648438,761.5,1051.699951171875,168.1999969482422,983.5
-doc_031,data/raw/doc_031.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,162.60000610351562,195.10000610351562,711.7999877929688,135.0,704.7999877929688,995.5999755859375,108.69999694824219,1017.9000244140625
-doc_032,data/raw/doc_032.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,169.39999389648438,200.89999389648438,780.2000122070312,153.10000610351562,707.5,1065.5,155.0,1031.9000244140625
-doc_033,data/raw/doc_033.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,111.19999694824219,133.10000610351562,782.9000244140625,164.89999389648438,803.5999755859375,992.9000244140625,162.1999969482422,1005.4000244140625
-doc_034,data/raw/doc_034.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,145.5,175.0,739.0999755859375,174.8000030517578,787.0999755859375,1071.9000244140625,197.5,1043.800048828125
-doc_035,data/raw/doc_035.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,102.5999984741211,119.80000305175781,759.0,170.89999389648438,717.2000122070312,968.4000244140625,104.0,984.7000122070312
-doc_036,data/raw/doc_036.jpg,receipt_and_table,Biểu mẫu/hóa đơn có kẻ bảng và cỡ chữ nhỏ,900,1200,131.6999969482422,138.3000030517578,760.2999877929688,130.10000610351562,698.7999877929688,965.0999755859375,191.60000610351562,982.0999755859375
+image_id,file_path,condition_group,condition_desc,capture_device,permission_note,reference_text_file,tl_x,tl_y,tr_x,tr_y,br_x,br_y,bl_x,bl_y,manual_tl_x,manual_tl_y,manual_tr_x,manual_tr_y,manual_br_x,manual_br_y,manual_bl_x,manual_bl_y
+doc1,data/raw/doc1.jpg,normal,Nền gỗ; ánh sáng khá đều; trang gần thẳng.,,,data/ground_truth_text/doc1.txt,,,,,,,,,,,,,,,,
+doc2,data/raw/doc2.jpg,normal,Nền gỗ; ánh sáng khá đều; trang có sơ đồ.,,,data/ground_truth_text/doc2.txt,,,,,,,,,,,,,,,,
+doc3,data/raw/doc3.jpg,normal,Nền gỗ; biểu mẫu; ánh sáng khá đều.,,,data/ground_truth_text/doc3.txt,,,,,,,,,,,,,,,,
+doc4,data/raw/doc4.jpg,normal,Nền gỗ; biểu mẫu có bảng; tay giữ mép dưới.,,,data/ground_truth_text/doc4.txt,,,,,,,,,,,,,,,,
+doc5,data/raw/doc5.jpg,normal,Nền gỗ; trang nhiều chữ; ánh sáng khá đều.,,,data/ground_truth_text/doc5.txt,,,,,,,,,,,,,,,,
+doc6,data/raw/doc6.jpg,normal,Nền gỗ; văn bản tiếng Anh; ánh sáng khá đều.,,,data/ground_truth_text/doc6.txt,,,,,,,,,,,,,,,,
+doc7,data/raw/doc7.jpg,normal,Nền gỗ; mục lục; góc chụp hơi xiên.,,,data/ground_truth_text/doc7.txt,,,,,,,,,,,,,,,,
+doc8,data/raw/doc8.jpg,normal,Nền gỗ; trang hai cột; ánh sáng khá đều.,,,data/ground_truth_text/doc8.txt,,,,,,,,,,,,,,,,
+doc9,data/raw/doc9.jpg,normal,Nền gỗ; văn bản; góc chụp gần trực diện.,,,data/ground_truth_text/doc9.txt,,,,,,,,,,,,,,,,
+doc10,data/raw/doc10.jpg,normal,Nền gỗ; trang có biểu đồ; góc chụp hơi xiên.,,,data/ground_truth_text/doc10.txt,,,,,,,,,,,,,,,,
+doc11,data/raw/doc11.jpg,shadow_cast,Nền xám; bóng đổ rõ ở nửa dưới.,,,data/ground_truth_text/doc11.txt,,,,,,,,,,,,,,,,
+doc12,data/raw/doc12.jpg,shadow_cast,Nền xám; bóng đổ ở vùng dưới trang.,,,data/ground_truth_text/doc12.txt,,,,,,,,,,,,,,,,
+doc13,data/raw/doc13.jpg,shadow_cast,Nền xám; bóng đổ che một phần trang.,,,data/ground_truth_text/doc13.txt,,,,,,,,,,,,,,,,
+doc14,data/raw/doc14.jpg,shadow_cast,Nền xám; bóng đổ vùng dưới; có bảng và công thức.,,,data/ground_truth_text/doc14.txt,,,,,,,,,,,,,,,,
+doc15,data/raw/doc15.jpg,normal,Nền xám; ánh sáng khá đều.,,,data/ground_truth_text/doc15.txt,,,,,,,,,,,,,,,,
+doc16,data/raw/doc16.jpg,shadow_cast,Nền xám; bóng đổ nhẹ ở phần dưới.,,,data/ground_truth_text/doc16.txt,,,,,,,,,,,,,,,,
+doc17,data/raw/doc17.jpg,shadow_cast,Nền xám; bóng đổ rõ trên trang.,,,data/ground_truth_text/doc17.txt,,,,,,,,,,,,,,,,
+doc18,data/raw/doc18.jpg,shadow_cast,Nền xám; bóng đổ trên một phần trang.,,,data/ground_truth_text/doc18.txt,,,,,,,,,,,,,,,,
+doc19,data/raw/doc19.jpg,shadow_cast,Nền xám; bóng đổ rõ ở vùng dưới.,,,data/ground_truth_text/doc19.txt,,,,,,,,,,,,,,,,
+doc20,data/raw/doc20.jpg,shadow_cast,Nền xám; bóng đổ trên trang.,,,data/ground_truth_text/doc20.txt,,,,,,,,,,,,,,,,
+doc21,data/raw/doc21.jpg,,,,,data/ground_truth_text/doc21.txt,,,,,,,,,,,,,,,,
+doc22,data/raw/doc22.jpg,,,,,data/ground_truth_text/doc22.txt,,,,,,,,,,,,,,,,
+doc23,data/raw/doc23.jpg,,,,,data/ground_truth_text/doc23.txt,,,,,,,,,,,,,,,,
+doc24,data/raw/doc24.jpg,,,,,data/ground_truth_text/doc24.txt,,,,,,,,,,,,,,,,
+doc25,data/raw/doc25.jpg,,,,,data/ground_truth_text/doc25.txt,,,,,,,,,,,,,,,,
+doc26,data/raw/doc26.jpg,,,,,data/ground_truth_text/doc26.txt,,,,,,,,,,,,,,,,
+doc27,data/raw/doc27.jpg,,,,,data/ground_truth_text/doc27.txt,,,,,,,,,,,,,,,,
+doc28,data/raw/doc28.jpg,,,,,data/ground_truth_text/doc28.txt,,,,,,,,,,,,,,,,
+doc29,data/raw/doc29.jpg,,,,,data/ground_truth_text/doc29.txt,,,,,,,,,,,,,,,,
+doc30,data/raw/doc30.jpg,,,,,data/ground_truth_text/doc30.txt,,,,,,,,,,,,,,,,
+doc31,data/raw/doc31.jpg,,,,,data/ground_truth_text/doc31.txt,,,,,,,,,,,,,,,,
+doc32,data/raw/doc32.jpg,,,,,data/ground_truth_text/doc32.txt,,,,,,,,,,,,,,,,
+doc33,data/raw/doc33.jpg,,,,,data/ground_truth_text/doc33.txt,,,,,,,,,,,,,,,,
+doc34,data/raw/doc34.jpg,,,,,data/ground_truth_text/doc34.txt,,,,,,,,,,,,,,,,
+doc35,data/raw/doc35.jpg,,,,,data/ground_truth_text/doc35.txt,,,,,,,,,,,,,,,,
+doc36,data/raw/doc36.jpg,,,,,data/ground_truth_text/doc36.txt,,,,,,,,,,,,,,,,
+doc37,data/raw/doc37.jpg,,,,,data/ground_truth_text/doc37.txt,,,,,,,,,,,,,,,,
+doc38,data/raw/doc38.jpg,,,,,data/ground_truth_text/doc38.txt,,,,,,,,,,,,,,,,
+doc39,data/raw/doc39.jpg,,,,,data/ground_truth_text/doc39.txt,,,,,,,,,,,,,,,,
+doc40,data/raw/doc40.jpg,,,,,data/ground_truth_text/doc40.txt,,,,,,,,,,,,,,,,
+doc41,data/raw/doc41.jpg,,,,,data/ground_truth_text/doc41.txt,,,,,,,,,,,,,,,,
+doc42,data/raw/doc42.jpg,,,,,data/ground_truth_text/doc42.txt,,,,,,,,,,,,,,,,
+doc43,data/raw/doc43.jpg,,,,,data/ground_truth_text/doc43.txt,,,,,,,,,,,,,,,,
+doc44,data/raw/doc44.jpg,,,,,data/ground_truth_text/doc44.txt,,,,,,,,,,,,,,,,
+doc45,data/raw/doc45.jpg,,,,,data/ground_truth_text/doc45.txt,,,,,,,,,,,,,,,,
+doc46,data/raw/doc46.jpg,,,,,data/ground_truth_text/doc46.txt,,,,,,,,,,,,,,,,
+doc47,data/raw/doc47.jpg,,,,,data/ground_truth_text/doc47.txt,,,,,,,,,,,,,,,,
+doc48,data/raw/doc48.jpg,,,,,data/ground_truth_text/doc48.txt,,,,,,,,,,,,,,,,
+doc49,data/raw/doc49.jpg,,,,,data/ground_truth_text/doc49.txt,,,,,,,,,,,,,,,,
+doc50,data/raw/doc50.jpg,,,,,data/ground_truth_text/doc50.txt,,,,,,,,,,,,,,,,
+doc51,data/raw/doc51.jpg,,,,,data/ground_truth_text/doc51.txt,,,,,,,,,,,,,,,,
+doc52,data/raw/doc52.jpg,,,,,data/ground_truth_text/doc52.txt,,,,,,,,,,,,,,,,
+doc53,data/raw/doc53.jpg,,,,,data/ground_truth_text/doc53.txt,,,,,,,,,,,,,,,,
+doc54,data/raw/doc54.jpg,,,,,data/ground_truth_text/doc54.txt,,,,,,,,,,,,,,,,
+doc55,data/raw/doc55.jpg,,,,,data/ground_truth_text/doc55.txt,,,,,,,,,,,,,,,,
+doc56,data/raw/doc56.jpg,,,,,data/ground_truth_text/doc56.txt,,,,,,,,,,,,,,,,
+doc57,data/raw/doc57.jpg,,,,,data/ground_truth_text/doc57.txt,,,,,,,,,,,,,,,,
+doc58,data/raw/doc58.jpg,,,,,data/ground_truth_text/doc58.txt,,,,,,,,,,,,,,,,
+doc59,data/raw/doc59.jpg,,,,,data/ground_truth_text/doc59.txt,,,,,,,,,,,,,,,,
+doc60,data/raw/doc60.jpg,,,,,data/ground_truth_text/doc60.txt,,,,,,,,,,,,,,,,
+doc61,data/raw/doc61.jpg,,,,,data/ground_truth_text/doc61.txt,,,,,,,,,,,,,,,,
+doc62,data/raw/doc62.jpg,,,,,data/ground_truth_text/doc62.txt,,,,,,,,,,,,,,,,
+doc63,data/raw/doc63.jpg,,,,,data/ground_truth_text/doc63.txt,,,,,,,,,,,,,,,,
+doc64,data/raw/doc64.jpg,,,,,data/ground_truth_text/doc64.txt,,,,,,,,,,,,,,,,
+doc65,data/raw/doc65.jpg,,,,,data/ground_truth_text/doc65.txt,,,,,,,,,,,,,,,,
+doc66,data/raw/doc66.jpg,,,,,data/ground_truth_text/doc66.txt,,,,,,,,,,,,,,,,
+doc67,data/raw/doc67.jpg,,,,,data/ground_truth_text/doc67.txt,,,,,,,,,,,,,,,,
+doc68,data/raw/doc68.jpg,,,,,data/ground_truth_text/doc68.txt,,,,,,,,,,,,,,,,
+doc69,data/raw/doc69.jpg,,,,,data/ground_truth_text/doc69.txt,,,,,,,,,,,,,,,,
+doc70,data/raw/doc70.jpg,,,,,data/ground_truth_text/doc70.txt,,,,,,,,,,,,,,,,
+doc71,data/raw/doc71.jpg,,,,,data/ground_truth_text/doc71.txt,,,,,,,,,,,,,,,,
+doc72,data/raw/doc72.jpg,,,,,data/ground_truth_text/doc72.txt,,,,,,,,,,,,,,,,
+doc73,data/raw/doc73.jpg,,,,,data/ground_truth_text/doc73.txt,,,,,,,,,,,,,,,,
+doc74,data/raw/doc74.jpg,,,,,data/ground_truth_text/doc74.txt,,,,,,,,,,,,,,,,
+doc75,data/raw/doc75.jpg,,,,,data/ground_truth_text/doc75.txt,,,,,,,,,,,,,,,,
+doc76,data/raw/doc76.jpg,,,,,data/ground_truth_text/doc76.txt,,,,,,,,,,,,,,,,
+doc77,data/raw/doc77.jpg,,,,,data/ground_truth_text/doc77.txt,,,,,,,,,,,,,,,,
+doc78,data/raw/doc78.jpg,,,,,data/ground_truth_text/doc78.txt,,,,,,,,,,,,,,,,
+doc79,data/raw/doc79.jpg,,,,,data/ground_truth_text/doc79.txt,,,,,,,,,,,,,,,,
+doc80,data/raw/doc80.jpg,,,,,data/ground_truth_text/doc80.txt,,,,,,,,,,,,,,,,
+doc81,data/raw/doc81.jpg,,,,,data/ground_truth_text/doc81.txt,,,,,,,,,,,,,,,,
+doc82,data/raw/doc82.jpg,,,,,data/ground_truth_text/doc82.txt,,,,,,,,,,,,,,,,
+doc83,data/raw/doc83.jpg,,,,,data/ground_truth_text/doc83.txt,,,,,,,,,,,,,,,,
+doc84,data/raw/doc84.jpg,,,,,data/ground_truth_text/doc84.txt,,,,,,,,,,,,,,,,
+doc85,data/raw/doc85.jpg,,,,,data/ground_truth_text/doc85.txt,,,,,,,,,,,,,,,,
+doc86,data/raw/doc86.jpg,,,,,data/ground_truth_text/doc86.txt,,,,,,,,,,,,,,,,
+doc87,data/raw/doc87.jpg,,,,,data/ground_truth_text/doc87.txt,,,,,,,,,,,,,,,,
+doc88,data/raw/doc88.jpg,,,,,data/ground_truth_text/doc88.txt,,,,,,,,,,,,,,,,
+doc89,data/raw/doc89.jpg,,,,,data/ground_truth_text/doc89.txt,,,,,,,,,,,,,,,,
+doc90,data/raw/doc90.jpg,,,,,data/ground_truth_text/doc90.txt,,,,,,,,,,,,,,,,
+doc91,data/raw/doc91.jpg,,,,,data/ground_truth_text/doc91.txt,,,,,,,,,,,,,,,,
+doc92,data/raw/doc92.jpg,,,,,data/ground_truth_text/doc92.txt,,,,,,,,,,,,,,,,
+doc93,data/raw/doc93.jpg,,,,,data/ground_truth_text/doc93.txt,,,,,,,,,,,,,,,,
+doc94,data/raw/doc94.jpg,,,,,data/ground_truth_text/doc94.txt,,,,,,,,,,,,,,,,
+doc95,data/raw/doc95.jpg,,,,,data/ground_truth_text/doc95.txt,,,,,,,,,,,,,,,,
+doc96,data/raw/doc96.jpg,,,,,data/ground_truth_text/doc96.txt,,,,,,,,,,,,,,,,
+doc97,data/raw/doc97.jpg,,,,,data/ground_truth_text/doc97.txt,,,,,,,,,,,,,,,,
+doc98,data/raw/doc98.jpg,,,,,data/ground_truth_text/doc98.txt,,,,,,,,,,,,,,,,
+doc99,data/raw/doc99.jpg,,,,,data/ground_truth_text/doc99.txt,,,,,,,,,,,,,,,,
+doc100,data/raw/doc100.jpg,,,,,data/ground_truth_text/doc100.txt,,,,,,,,,,,,,,,,
+doc101,data/raw/doc101.jpg,,,,,data/ground_truth_text/doc101.txt,,,,,,,,,,,,,,,,
+doc102,data/raw/doc102.jpg,,,,,data/ground_truth_text/doc102.txt,,,,,,,,,,,,,,,,
+doc103,data/raw/doc103.jpg,,,,,data/ground_truth_text/doc103.txt,,,,,,,,,,,,,,,,
+doc104,data/raw/doc104.jpg,,,,,data/ground_truth_text/doc104.txt,,,,,,,,,,,,,,,,
+doc105,data/raw/doc105.jpg,,,,,data/ground_truth_text/doc105.txt,,,,,,,,,,,,,,,,
+doc106,data/raw/doc106.jpg,,,,,data/ground_truth_text/doc106.txt,,,,,,,,,,,,,,,,
+doc107,data/raw/doc107.jpg,,,,,data/ground_truth_text/doc107.txt,,,,,,,,,,,,,,,,
+doc108,data/raw/doc108.jpg,,,,,data/ground_truth_text/doc108.txt,,,,,,,,,,,,,,,,
+doc109,data/raw/doc109.jpg,,,,,data/ground_truth_text/doc109.txt,,,,,,,,,,,,,,,,
+doc110,data/raw/doc110.jpg,,,,,data/ground_truth_text/doc110.txt,,,,,,,,,,,,,,,,
+doc111,data/raw/doc111.jpg,,,,,data/ground_truth_text/doc111.txt,,,,,,,,,,,,,,,,
