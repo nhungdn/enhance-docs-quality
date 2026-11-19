@@ -1,0 +1,6 @@
+Mã tài liệu: DOC09
+Internet vạn vật và ứng dụng trong đời sống
+Internet vạn vật, viết tắt là IoT, là mạng lưới các thiết bị vật lý được gắn cảm biến, phần mềm và khả năng kết nối để thu thập và trao đổi dữ liệu qua Internet. Những thiết bị này có thể là bóng đèn, ổ cắm, máy bơm, xe cộ hay cả một nhà máy.
+Một hệ thống IoT thông thường gồm bốn thành phần. Thứ nhất là các cảm biến đo nhiệt độ, độ ẩm, ánh sáng hoặc chuyển động. Thứ hai là vi điều khiển như ESP32, xử lý dữ liệu và gửi đi qua Wi-Fi hoặc Bluetooth. Thứ ba là giao thức truyền tin như MQTT, nhẹ và phù hợp với thiết bị có tài nguyên thấp. Cuối cùng là máy chủ hoặc nền tảng đám mây để lưu trữ và hiển thị dữ liệu.
+Trong nông nghiệp, cảm biến độ ẩm đất giúp hệ thống tưới nước tự động đúng lúc, tiết kiệm nước và công sức. Trong nhà thông minh, người dùng có thể bật tắt đèn và điều hòa từ xa bằng điện thoại. Trong y tế, đồng hồ đeo tay theo dõi nhịp tim và gửi cảnh báo khi có dấu hiệu bất thường.
+Bên cạnh lợi ích, IoT cũng đặt ra thách thức về bảo mật. Nếu thiết bị dùng mật khẩu mặc định hoặc không được cập nhật phần mềm, kẻ xấu có thể xâm nhập và điều khiển chúng.

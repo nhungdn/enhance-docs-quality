@@ -16,7 +16,7 @@
 
 ### Tình trạng dữ liệu TV3
 
-Đã có 111/120 ảnh theo tổng số trong khung báo cáo. 20 ảnh đầu được phân nhóm
-sơ bộ, 91 ảnh chưa phân nhóm; thư mục transcript riêng đã tạo nhưng chưa có file
-văn bản. Có thể bắt đầu chép chuẩn cho khoảng 35 ảnh để đánh giá thử; cần bổ
-sung ít nhất 9 ảnh và hoàn thiện các nhãn theo từng quota trước khi chốt báo cáo.
+Đã có 111/120 ảnh theo tổng số trong khung báo cáo; tên ảnh được đổi theo nhóm
+điều kiện và manifest đã cập nhật đường dẫn. Có transcript cho 20 ảnh đầu, còn
+91 ảnh chưa có transcript. Nhóm điều kiện cần được xác nhận từ ảnh thật; cần bổ
+sung ít nhất 9 ảnh và hoàn thiện nhãn trước khi chốt báo cáo.

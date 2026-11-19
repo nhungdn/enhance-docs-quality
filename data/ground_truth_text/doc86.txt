@@ -1,0 +1,6 @@
+Document ID: DOC19
+What Is a Digital Image?
+A digital image is a grid of tiny squares called pixels. Each pixel stores a number that describes its brightness or colour. When thousands or millions of pixels are shown together on a screen, our eyes blend them into a smooth picture.
+In a grayscale image, each pixel is usually a value from 0 to 255, where 0 is black and 255 is white. Colour images typically use three such values for each pixel, one for red, one for green and one for blue. By mixing these three channels in different amounts, a screen can display millions of different colours.
+The resolution of an image is the number of pixels it contains, for example 4000 by 3000. A higher resolution keeps more detail, but also makes the file larger and slower to process. When a photograph is taken in poor light, the sensor amplifies the signal and produces noise, which appears as random bright and dark dots.
+Image processing is the field that studies how to change these numbers to get a better or more useful picture. Common tasks include removing noise, improving contrast, detecting edges and correcting the perspective of a photographed document so that it looks like a flat scan.

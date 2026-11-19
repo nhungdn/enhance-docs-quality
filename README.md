@@ -25,16 +25,18 @@ enhance-docs-quality/
 ├── experiments/                  # Thực nghiệm, đánh giá & vùng nháp riêng cho từng thành viên
 │   ├── tv1_sandbox.py            # [TV1 SỞ HỮU] Script test riêng cho TV1 (lưu ảnh vào outputs/tv1/)
 │   ├── tv2_sandbox.py            # [TV2 SỞ HỮU] Script test riêng cho TV2 (lưu ảnh vào outputs/tv2/)
-│   ├── metrics.py                # [TV3 SỞ HỮU] Các độ đo: IoU tứ giác, sai số góc, PSNR, SSIM, tương phản
-│   ├── evaluate.py               # [TV3 SỞ HỮU] Chạy Ablation, so sánh Otsu vs Adaptive, đánh giá Fallback
-│   └── seed_week1_dataset.py     # [TV3 SỞ HỮU] Khởi tạo dữ liệu mẫu đợt 1
+│   ├── annotate_corners.py       # [TV3] Công cụ click gán nhãn 4 góc chuẩn
+│   ├── compare_experiments.py    # [TV3] So sánh cấu hình, OCR, sai số góc, thời gian
+│   ├── metrics.py                # [TV3 SỞ HỮU] CER/WER, sai số góc pixel, bg_std phụ
+│   └── evaluate.py               # [TV3 SỞ HỮU] Đánh giá OCR, góc, thời gian và fallback thực tế
 ├── data/                         # Bộ dữ liệu ảnh tài liệu và nhãn (TV3 quản lý)
-│   ├── raw/                      # 36 ảnh đầu tiên (doc_001.jpg .. doc_036.jpg)
-│   ├── metadata.csv              # Nhãn tọa độ 4 góc [TL, TR, BR, BL] & nhóm điều kiện
-│   └── README.md                 # Thống kê dữ liệu
+│   ├── raw/                      # Ảnh chụp thật, giữ nguyên ảnh gốc
+│   ├── ground_truth_text/        # Transcript chuẩn riêng từng ảnh (*.txt)
+│   ├── metadata.csv              # Điều kiện, đường dẫn transcript, góc chuẩn/manual
+│   └── README.md                 # Quy trình thu thập, gán nhãn và đánh giá
 ├── report_draft.md               # Bản nháp báo cáo định dạng Markdown (tất cả cùng cập nhật theo mục riêng)
 ├── report_draft.docx             # File mẫu gốc (giữ nguyên không chỉnh sửa)
-├── timeline.md                   # Kế hoạch phân công 8 tuần (đã bỏ OCR, xuất PDF, chọn chế độ)
+├── timeline.md                   # Kế hoạch phân công 8 tuần
 └── requirements.txt              # Danh sách thư viện Python
 ```
 
@@ -44,7 +46,7 @@ enhance-docs-quality/
 |:---:|---|---|---|
 | Nguyễn Thị Ngọc Mai | Phát hiện biên, kiểm tra tứ giác hợp lệ, biến đổi phối cảnh, gợi ý góc fallback | `core/detector.py`<br>`core/warp.py` | `python experiments/tv1_sandbox.py` |
 | Khổng Thị Thùy Linh | Chuyển xám, khử bóng đổ hình thái học, khử nhiễu, CLAHE, nhị phân hóa (Otsu & Adaptive) | `core/enhancer.py` | `python experiments/tv2_sandbox.py` |
-| Nguyễn Thị Anh Ngọc | Dữ liệu, gán nhãn 4 góc, độ đo đánh giá (IoU, PSNR, SSIM, độ đồng nhất nền), thí nghiệm | `experiments/metrics.py`<br>`experiments/evaluate.py`<br>`data/*` | `python experiments/evaluate.py` |
+| Nguyễn Thị Anh Ngọc | Dữ liệu ảnh chụp thật, transcript, đánh giá CER/WER, sai số góc pixel, thời gian và fallback | `experiments/metrics.py`<br>`experiments/evaluate.py`<br>`experiments/compare_experiments.py`<br>`data/*` | `python experiments/compare_experiments.py` |
 | Đoàn Thị Hồng Nhung | Web Backend/Frontend, xem Trước/Sau, Canvas kéo 4 góc thủ công, tải ảnh kết quả | `web/app.py`<br>`web/static/*`<br>`core/pipeline.py` | `python -m web.app` |
 
 > **Quy tắc làm việc nhóm tránh xung đột:**
@@ -96,6 +98,10 @@ Yêu cầu **Python 3.10+**. Cài đặt các thư viện cần thiết:
 pip install -r requirements.txt
 ```
 
+Để chạy đánh giá OCR của TV3, cài thêm ứng dụng Tesseract OCR cùng dữ liệu ngôn
+ngữ tiếng Việt (`vie`) và tiếng Anh (`eng`); hướng dẫn chi tiết ở
+[`data/README.md`](./data/README.md).
+
 ### 4.2. Khởi chạy Ứng dụng Web
 Chạy trực tiếp module `web.app`:
 
@@ -119,10 +125,19 @@ Sau đó mở trình duyệt tại địa chỉ: **`http://127.0.0.1:8000`**
 
 ---
 
-## 5. Kiểm tra nhanh qua CLI (Smoke Test)
+## 5. Các lệnh CLI
 
 ```bash
 python experiments/tv1_sandbox.py
 python experiments/tv2_sandbox.py
-python experiments/evaluate.py
+```
+
+Transcript chuẩn được lưu riêng theo đường dẫn `reference_text_file` trong
+`data/metadata.csv` (ví dụ `doc1` hiện dùng `data/ground_truth_text/doc01.txt`).
+Để chấm trước một phần ảnh đã có transcript, dùng `--allow-partial`; script sẽ
+báo rõ ảnh nào bị bỏ qua. Xem [`data/README.md`](./data/README.md) để biết cách
+đặt tên file và chạy đánh giá. Runner so sánh nhiều cấu hình trên cùng ảnh:
+
+```powershell
+python experiments/compare_experiments.py --metadata data/metadata.csv --output outputs/tv3_experiment_results.csv --lang vie+eng --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe" --repeats 3
 ```

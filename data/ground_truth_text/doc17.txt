@@ -1,0 +1,17 @@
+Mã tài liệu: DOC17
+Chương trình hội thảo Công nghệ Sinh viên 2026
+Thời gian: Thứ Bảy, ngày 12 tháng 12 năm 2026. Địa điểm: Hội trường A2, tầng 3.
+08:00 - 08:30 Đón tiếp đại biểu và đăng ký
+08:30 - 08:45 Phát biểu khai mạc
+08:45 - 09:30 Báo cáo chính: Trí tuệ nhân tạo trong giáo dục
+09:30 - 10:00 Giải lao và tham quan gian hàng
+10:00 - 10:45 Chuyên đề 1: Xử lý ảnh và thị giác máy tính
+10:45 - 11:30 Chuyên đề 2: Internet vạn vật trong nông nghiệp
+11:30 - 13:30 Nghỉ trưa
+13:30 - 14:15 Chuyên đề 3: An toàn thông tin cho người dùng
+14:15 - 15:00 Chuyên đề 4: Phát triển ứng dụng web hiện đại
+15:00 - 15:30 Giải lao
+15:30 - 16:15 Thảo luận bàn tròn: Việc làm cho sinh viên mới ra trường
+16:15 - 16:45 Trao giải cuộc thi lập trình
+16:45 - 17:00 Bế mạc và chụp ảnh lưu niệm
+Liên hệ ban tổ chức: hoithao2026@example.com, số điện thoại 0123 456 789.
